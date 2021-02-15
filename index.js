@@ -26,16 +26,16 @@ app.use(morgan(function (tokens, req, res) {
 const Person = require("./models/person")
 
 const errorHandler = (error, request, response, next) => {
-  console.log(error.message)
+  console.error(error.message)
 
-  if (error.name === "CastError") {
+  if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
   }
 
   next(error)
 }
 
-app.use(errorHandler)
+
 
 app.get("/api/persons", (req, res, next) => {
   Person.find({})
@@ -49,13 +49,17 @@ app.get("/api/persons/:id", (req, res, next) => {
   console.log(req.params.id)
   Person.findById(req.params.id)
     .then(person => {
-      console.log(person)
-      res.json(person)
+      if (person) {
+        res.json(person)
+      }
+      else {
+        res.status(404).end()
+      }
     })
     .catch(error => next(error))
 })
 
-app.post("/api/persons", (req, res, next) => {  
+app.post("/api/persons", (req, res, next) => {
   const id = Math.floor(Math.random() * Math.floor(1000000));
 
   if (!req.body || !req.body.name || !req.body.number) {
@@ -64,18 +68,18 @@ app.post("/api/persons", (req, res, next) => {
         error: "name or number not given"
       }
     )
-  // } else if (persons.find(person => person.name === req.body.name)) {
-  //   res.status(400).send(
-  //     {
-  //       error: "name must be unique"
-  //     }
-  //   )
+    // } else if (persons.find(person => person.name === req.body.name)) {
+    //   res.status(400).send(
+    //     {
+    //       error: "name must be unique"
+    //     }
+    //   )
   } else {
     const person = new Person({
       name: req.body.name,
       number: req.body.number
     })
-    
+
     person.save()
       .then(savedPerson => {
         res.json(savedPerson)
@@ -114,12 +118,13 @@ app.get("/info", (req, res) => {
         <p>Phonebook has info for ${result.length} people.</p>
         <p>${new Date().toString()}</p>
       `
-    
+
       res.end(html)
     })
     .catch(error => next(error))
 })
 
+app.use(errorHandler)
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)

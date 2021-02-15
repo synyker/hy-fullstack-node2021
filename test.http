@@ -4,7 +4,7 @@
 GET {{api_url}}/api/persons
 
 ###
-GET {{api_url}}/api/persons/602ac677cb12eb17c1433c0d
+GET {{api_url}}/api/persons/aaa
 
 ###
 DELETE {{api_url}}/api/persons/602abc20f0a5a009eefa06b4
