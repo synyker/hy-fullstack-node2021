@@ -40,6 +40,19 @@ app.get("/api/persons/:id", (req, res) => {
   }
 })
 
+app.delete("/api/persons/:id", (req, res) => {
+  const id = req.params.id
+  const index = persons.findIndex(person => person.id == id)
+
+  if (index < 0) {
+    res.status(404).end()
+  }
+  else {
+    delete persons[index]
+    res.status(200).end()
+  }
+})
+
 app.get("/info", (req, res) => {
   res.writeHead(200, { 'Content-Type': 'text/html' })
   const html = `

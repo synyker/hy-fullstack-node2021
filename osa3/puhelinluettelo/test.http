@@ -2,3 +2,6 @@
 
 ###
 GET {{api_url}}/api/persons
+
+###
+DELETE {{api_url}}/api/persons/666
