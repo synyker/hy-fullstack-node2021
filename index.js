@@ -84,7 +84,9 @@ app.post("/api/persons", (req, res, next) => {
       .then(savedPerson => {
         res.json(savedPerson)
       })
-      .catch(error => next(error))
+      .catch(error => {
+        res.status(400).send(error)
+      })
   }
 })
 
