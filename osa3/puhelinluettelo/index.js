@@ -107,6 +107,7 @@ app.get("/info", (req, res) => {
     <p>Phonebook has info for ${persons.length} people.</p>
     <p>${new Date().toString()}</p>
   `
+
   res.end(html)
 })
 
