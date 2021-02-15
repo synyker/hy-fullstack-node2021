@@ -4,6 +4,9 @@
 GET {{api_url}}/api/persons
 
 ###
+GET {{api_url}}/api/persons/602ac3840f637813e266c10c
+
+###
 DELETE {{api_url}}/api/persons/1
 
 ###
@@ -12,5 +15,5 @@ Content-Type: application/json
 
 {
     "name": "Jonne A.",
-    
+    "number": "121212"
 }

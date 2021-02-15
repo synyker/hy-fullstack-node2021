@@ -1,3 +1,4 @@
+require("dotenv").config()
 const { response } = require("express");
 const express = require("express")
 const cors = require("cors")
@@ -22,46 +23,22 @@ app.use(morgan(function (tokens, req, res) {
   ].join(" ")
 }))
 
-let persons = [
-  {
-    id: 1,
-    name: "Arto Hellas",
-    numer: "040-123456"
-  },
-  {
-    id: 2,
-    name: "Ada Lovelace",
-    number: "39-44-532523"
-  },
-  {
-    id: 3,
-    name: "Dan Abramov",
-    number: "12345678"
-  },
-  {
-    id: 4,
-    name: "Mary Poppendick",
-    number: "123123123"
-  }
-]
+const Person = require("./models/person")
 
 app.get("/api/persons", (req, res) => {
-  res.json(persons)
+  Person.find({}).then(result => {
+    res.json(result)
+  })
 })
 
 app.get("/api/persons/:id", (req, res) => {
   const id = req.params.id
-  const person = persons.find(person => person.id == id)
-
-  if (!person) {
-    res.status(404).end()
-  }
-  else {
-    res.json(person)
-  }
+  Person.findById(req.params.id).then(person => {
+    response.json(person)
+  })
 })
 
-app.post("/api/persons", (req, res) => {
+app.post("/api/persons", (req, res) => {  
   const id = Math.floor(Math.random() * Math.floor(1000000));
 
   if (!req.body || !req.body.name || !req.body.number) {
@@ -70,22 +47,21 @@ app.post("/api/persons", (req, res) => {
         error: "name or number not given"
       }
     )
-  } else if (persons.find(person => person.name === req.body.name)) {
-    res.status(400).send(
-      {
-        error: "name must be unique"
-      }
-    )
+  // } else if (persons.find(person => person.name === req.body.name)) {
+  //   res.status(400).send(
+  //     {
+  //       error: "name must be unique"
+  //     }
+  //   )
   } else {
-    const person = {
-      id: id,
+    const person = new Person({
       name: req.body.name,
       number: req.body.number
-    }
-
-    persons.push(person)
-
-    res.json(person)
+    })
+    
+    person.save().then(savedPerson => {
+      res.json(savedPerson)
+    })
   }
 })
 
