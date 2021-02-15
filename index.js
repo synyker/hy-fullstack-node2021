@@ -25,20 +25,37 @@ app.use(morgan(function (tokens, req, res) {
 
 const Person = require("./models/person")
 
-app.get("/api/persons", (req, res) => {
-  Person.find({}).then(result => {
-    res.json(result)
-  })
+const errorHandler = (error, request, response, next) => {
+  console.log(error.message)
+
+  if (error.name === "CastError") {
+    return response.status(400).send({ error: 'malformatted id' })
+  }
+
+  next(error)
+}
+
+app.use(errorHandler)
+
+app.get("/api/persons", (req, res, next) => {
+  Person.find({})
+    .then(result => {
+      res.json(result)
+    })
+    .catch(error => next(error))
 })
 
-app.get("/api/persons/:id", (req, res) => {
-  const id = req.params.id
-  Person.findById(req.params.id).then(person => {
-    response.json(person)
-  })
+app.get("/api/persons/:id", (req, res, next) => {
+  console.log(req.params.id)
+  Person.findById(req.params.id)
+    .then(person => {
+      console.log(person)
+      res.json(person)
+    })
+    .catch(error => next(error))
 })
 
-app.post("/api/persons", (req, res) => {  
+app.post("/api/persons", (req, res, next) => {  
   const id = Math.floor(Math.random() * Math.floor(1000000));
 
   if (!req.body || !req.body.name || !req.body.number) {
@@ -59,33 +76,48 @@ app.post("/api/persons", (req, res) => {
       number: req.body.number
     })
     
-    person.save().then(savedPerson => {
-      res.json(savedPerson)
-    })
+    person.save()
+      .then(savedPerson => {
+        res.json(savedPerson)
+      })
+      .catch(error => next(error))
   }
 })
 
-app.delete("/api/persons/:id", (req, res) => {
-  const id = req.params.id
-  const index = persons.findIndex(person => person.id == id)
+app.put("/api/persons/:id", (req, res, next) => {
+  const person = {
+    name: req.body.name,
+    number: req.body.number
+  }
 
-  if (index < 0) {
-    res.status(404).end()
-  }
-  else {
-    persons.splice(index, 1)
-    res.status(200).end()
-  }
+  Person.findByIdAndUpdate(req.params.id, person, { new: true })
+    .then(updatedPerson => {
+      res.json(updatedPerson)
+    })
+    .catch(error => next(error))
+})
+
+app.delete("/api/persons/:id", (req, res, next) => {
+
+  Person.findByIdAndRemove(req.params.id)
+    .then(result => {
+      res.status(204).end()
+    })
+    .catch(error => next(error))
 })
 
 app.get("/info", (req, res) => {
-  res.writeHead(200, { 'Content-Type': 'text/html' })
-  const html = `
-    <p>Phonebook has info for ${persons.length} people.</p>
-    <p>${new Date().toString()}</p>
-  `
-
-  res.end(html)
+  Person.find({})
+    .then(result => {
+      res.writeHead(200, { 'Content-Type': 'text/html' })
+      const html = `
+        <p>Phonebook has info for ${result.length} people.</p>
+        <p>${new Date().toString()}</p>
+      `
+    
+      res.end(html)
+    })
+    .catch(error => next(error))
 })
 
 const PORT = process.env.PORT || 3001

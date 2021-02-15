@@ -4,10 +4,10 @@
 GET {{api_url}}/api/persons
 
 ###
-GET {{api_url}}/api/persons/602ac3840f637813e266c10c
+GET {{api_url}}/api/persons/602ac677cb12eb17c1433c0d
 
 ###
-DELETE {{api_url}}/api/persons/1
+DELETE {{api_url}}/api/persons/602abc20f0a5a009eefa06b4
 
 ###
 POST {{api_url}}/api/persons/
