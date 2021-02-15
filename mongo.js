@@ -1,7 +1,7 @@
-const mongoose = require("mongoose")
+const mongoose = require('mongoose')
 
 if (process.argv.length < 3) {
-  console.log("parameters missing")
+  console.log('parameters missing')
   process.exit()
 }
 
@@ -17,7 +17,7 @@ const personSchema = new mongoose.Schema({
   number: String
 })
 
-const Person = mongoose.model("Person", personSchema)
+const Person = mongoose.model('Person', personSchema)
 
 if (name && number) {  
   
@@ -26,14 +26,14 @@ if (name && number) {
     number: number
   })
   
-  person.save().then(result => {
+  person.save().then(() => {
     console.log(`added ${name} number ${number} to phonebook`)
     mongoose.connection.close()
   })
 }
 else {
   Person.find({}).then(result => {
-    console.log("phonebook:")
+    console.log('phonebook:')
     result.forEach(person => {
       console.log(`${person.name} ${person.number}`)
     })
