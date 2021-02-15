@@ -1,26 +1,29 @@
+const { response } = require('express');
 const express = require('express')
 const app = express()
 
+app.use(express.json());
+
 let persons = [
   {
-      id: 1,
-      name: "Arto Hellas",
-      numer: "040-123456"
+    id: 1,
+    name: "Arto Hellas",
+    numer: "040-123456"
   },
   {
-      id: 2,
-      name: "Ada Lovelace",
-      number: "39-44-532523"
+    id: 2,
+    name: "Ada Lovelace",
+    number: "39-44-532523"
   },
   {
-      id: 3,
-      name: "Dan Abramov",
-      number: "12345678"
+    id: 3,
+    name: "Dan Abramov",
+    number: "12345678"
   },
   {
-      id: 4,
-      name: "Mary Poppendick",
-      number: "123123123"
+    id: 4,
+    name: "Mary Poppendick",
+    number: "123123123"
   }
 ]
 
@@ -36,6 +39,35 @@ app.get("/api/persons/:id", (req, res) => {
     res.status(404).end()
   }
   else {
+    res.json(person)
+  }
+})
+
+app.post("/api/persons", (req, res) => {
+  const id = Math.floor(Math.random() * Math.floor(1000000));
+  console.log(req.body)
+
+  if (!req.body || !req.body.name || !req.body.number) {
+    res.status(400).send(
+      {
+        error: "name or number not given"
+      }
+    )
+  } else if (persons.find(person => person.name === req.body.name)) {
+    res.status(400).send(
+      {
+        error: "name must be unique"
+      }
+    )
+  } else {
+    const person = {
+      id: id,
+      name: req.body.name,
+      number: req.body.number
+    }
+
+    persons.push(person)
+
     res.json(person)
   }
 })

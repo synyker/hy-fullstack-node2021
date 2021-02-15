@@ -4,4 +4,13 @@
 GET {{api_url}}/api/persons
 
 ###
-DELETE {{api_url}}/api/persons/666
+DELETE {{api_url}}/api/persons/1
+
+###
+POST {{api_url}}/api/persons/
+Content-Type: application/json
+
+{
+    "name": "Jonne A.",
+    
+}
