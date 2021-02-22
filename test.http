@@ -17,3 +17,17 @@ Content-Type: application/json
     "name": "Jonne A.",
     "number": "121212"
 }
+
+###
+GET {{api_url}}/api/blogs
+
+###
+POST {{api_url}}/api/blogs/
+Content-Type: application/json
+
+{
+    "title": "test_title",
+    "author": "jonne",
+    "url": "http://localhost:3001/blogs/test-title-blog",
+    "likes": 0
+}
